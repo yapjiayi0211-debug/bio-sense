@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio-Sense: Translating Biodata into Aesthetic Aura</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        pitchblack: '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS Styles -->
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Faint digital grid background overlay */
+        .grid-overlay {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            pointer-events: none;
+        }
+
+        /* Glassmorphism styling */
+        .glass-card {
+            background: rgba(10, 10, 10, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .glass-card-hover {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card-hover:hover {
+            background: rgba(20, 20, 20, 0.8);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 50px 0 rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Glassmorphic scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.9);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Ambient glow spots */
+        .glow-spot {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.12;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            transition: all 1.5s ease-in-out;
+        }
+
+        /* Custom input range styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: rgba(255, 255, 255, 0.1);
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #ffffff;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+        }
+
+        /* Pulse animations for aesthetics */
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        .animate-subtle-pulse {
+            animation: subtle-pulse 4s infinite ease-in-out;
+        }
+
+        .line-glow {
+            box-shadow: 0 0 15px currentColor;
+        }
+
+        /* Page reveal transitions */
+        .fade-enter-active {
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-enter-from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Red flashing alarm vignette */
+        @keyframes alert-vignette {
+            0%, 100% { box-shadow: inset 0 0 60px rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.02); }
+            50% { box-shadow: inset 0 0 120px rgba(239, 68, 68, 0.75); background: rgba(239, 68, 68, 0.08); }
+        }
+        .policed-vignette-active {
+            animation: alert-vignette 2s infinite ease-in-out;
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Breathing Orb guided animation states */
+        @keyframes breathing-in {
+            0% { transform: scale(0.9); background-color: rgba(239, 68, 68, 0.7); box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+            100% { transform: scale(1.35); background-color: rgba(244, 63, 94, 0.9); box-shadow: 0 0 40px rgba(244, 63, 94, 0.6); }
+        }
+        @keyframes breathing-out {
+            0% { transform: scale(1.35); background-color: rgba(244, 63, 94, 0.9); box-shadow: 0 0 40px rgba(244, 63, 94, 0.6); }
+            100% { transform: scale(0.9); background-color: rgba(249, 115, 22, 0.7); box-shadow: 0 0 20px rgba(249, 115, 22, 0.3); }
+        }
+        @keyframes breathing-hold {
+            0%, 100% { transform: scale(1.35); background-color: rgba(244, 63, 94, 0.9); box-shadow: 0 0 45px rgba(244, 63, 94, 0.7); }
+            50% { transform: scale(1.38); background-color: rgba(236, 72, 153, 0.9); box-shadow: 0 0 50px rgba(236, 72, 153, 0.8); }
+        }
+        
+        .orb-inhale {
+            animation: breathing-in 4s forwards cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .orb-hold {
+            animation: breathing-hold 2s infinite ease-in-out;
+        }
+        .orb-exhale {
+            animation: breathing-out 4s forwards cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen select-none overflow-x-hidden">
+
+    <!-- Policed Warning Vignette Overlay -->
+    <div id="policed-vignette" class="fixed inset-0 z-[100] pointer-events-none hidden"></div>
+
+    <!-- Absolute background nodes -->
+    <div class="fixed inset-0 z-[-2] bg-black"></div>
+    <div class="fixed inset-0 z-[-2] grid-overlay"></div>
+    
+    <!-- Ambient Blur Background Orbs -->
+    <div id="ambient-glow-1" class="glow-spot w-[45vw] h-[45vw] top-[10%] left-[5%] bg-purple-500"></div>
+    <div id="ambient-glow-2" class="glow-spot w-[40vw] h-[40vw] bottom-[10%] right-[10%] bg-orange-500"></div>
+
+    <!-- Background Full Screen Particles (Landing Page Context) -->
+    <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-auto transition-opacity duration-1000"></canvas>
+
+    <!-- SPA VIEWPORT CONTAINER -->
+    <div class="relative z-10 w-full">
+
+        <!-- ================= SECTION 1: LANDING PAGE ================= -->
+        <main id="landing-page" class="w-full flex flex-col items-center">
+            
+            <!-- Hero Section -->
+            <section class="min-h-screen w-full flex flex-col justify-between items-center px-6 py-12 relative">
+                <!-- Top Nav / Meta -->
+                <div class="w-full max-w-7xl flex justify-between items-center text-xs tracking-[0.3em] text-white/40 font-outfit uppercase">
+                    <div>Speculative Showcase // Vol. 01</div>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
+                        <span>Sticker Aura Ver 2.0</span>
+                    </div>
+                </div>
+
+                <!-- Center Title & CTA -->
+                <div class="flex flex-col items-center text-center my-auto">
+                    <h1 class="font-outfit font-extralight text-7xl md:text-9xl text-white tracking-[0.25em] relative select-none cursor-default leading-none">
+                        BIO-SENSE
+                    </h1>
+                    <p class="font-outfit text-white/50 text-xs md:text-sm tracking-[0.5em] mt-8 uppercase font-light">
+                        Translating Biodata into Aesthetic Aura
+                    </p>
+                    
+                    <!-- Glass CTA Button -->
+                    <button id="btn-explore" class="group mt-16 px-10 py-4 font-outfit tracking-[0.3em] uppercase text-xs text-white glass-card rounded-full border border-white/10 hover:border-white/30 hover:scale-105 active:scale-95 duration-500 shadow-[0_0_15px_rgba(255,255,255,0.05)] cursor-pointer">
+                        <span class="relative z-10 flex items-center gap-3">
+                            Start Explore
+                            <svg class="w-3.5 h-3.5 transform group-hover:translate-x-1 duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Scroll Indicator -->
+                <div class="flex flex-col items-center gap-2 text-white/30 text-[10px] tracking-[0.4em] uppercase font-outfit select-none animate-pulse">
+                    <span>Scroll to context</span>
+                    <svg class="w-4 h-4 animate-bounce mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Storytelling Section (The Context) -->
+            <section id="story-section" class="w-full max-w-5xl px-6 py-32 flex flex-col gap-24 relative z-20">
+                <div class="w-full flex items-center gap-6">
+                    <div class="h-[1px] flex-grow bg-white/10"></div>
+                    <h2 class="font-outfit text-xs text-white/40 tracking-[0.4em] uppercase font-medium">The Evolutionary Context</h2>
+                    <div class="h-[1px] flex-grow bg-white/10"></div>
+                </div>
+
+                <!-- Story Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    
+                    <!-- Past Card -->
+                    <div class="glass-card glass-card-hover p-10 rounded-2xl flex flex-col justify-between group">
+                        <div>
+                            <div class="font-outfit text-white/30 text-xs tracking-[0.3em] uppercase mb-8 flex items-center justify-between">
+                                <span>Timeline Era</span>
+                                <span class="text-white/60">2015 — 2025</span>
+                            </div>
+                            <h3 class="font-outfit text-2xl font-light tracking-widest text-white mb-6 uppercase group-hover:text-purple-300 duration-500">
+                                Past: Biological Quantification
+                            </h3>
+                            <p class="text-white/60 leading-relaxed text-sm font-light text-justify">
+                                From a fashionable iPhone accessory to an intimate medical sensor, the evolution of wearable technology stripped away the outer shell to extract the core essence: biological quantification. During this decade, we normalized the constant, digital surveillance of the self, counting steps, tracking heart rates, and graphing sleep cycles in cold charts and metrics.
+                            </p>
+                        </div>
+                        <div class="mt-12 text-white/20 text-xs tracking-wider flex items-center gap-2">
+                            <span>SURVEILLANCE MECHANISMS</span>
+                            <span class="w-2 h-2 rounded-full bg-purple-500/30"></span>
+                        </div>
+                    </div>
+
+                    <!-- Present Card -->
+                    <div class="glass-card glass-card-hover p-10 rounded-2xl flex flex-col justify-between group border-orange-500/20 shadow-[0_4px_30px_rgba(255,158,121,0.05)]">
+                        <div>
+                            <div class="font-outfit text-orange-400/50 text-xs tracking-[0.3em] uppercase mb-8 flex items-center justify-between">
+                                <span>Optimization Stage</span>
+                                <span class="text-orange-400">Present Paradigm</span>
+                            </div>
+                            <h3 class="font-outfit text-2xl font-light tracking-widest text-white mb-6 uppercase group-hover:text-orange-300 duration-500">
+                                Present: Smart Skin Sticker
+                            </h3>
+                            <p class="text-white/60 leading-relaxed text-sm font-light text-justify">
+                                Shedding the physical watch frame, wearable sensors have evolved into an ultra-thin, translucent "smart skin sticker." It de-digitizes health metrics into fluid aesthetics. By translating biodata directly into glowing auras, the sticker actively neutralizes anxiety within the user's ambient environment, curing somatic imbalances before physical sickness manifests.
+                            </p>
+                        </div>
+                        <div class="mt-12 text-orange-400/40 text-xs tracking-wider flex items-center gap-2">
+                            <span>AESTHETIC HARMONIZATION</span>
+                            <span class="w-2 h-2 rounded-full bg-orange-500/40 animate-ping"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Floating Transition Prompt at end of scroll -->
+                <div class="flex flex-col items-center gap-6 mt-12 text-center">
+                    <p class="text-xs text-white/40 tracking-[0.2em] font-light max-w-md">
+                        Step beyond the text. Calibrate your bio-signals and observe the digital translation in real-time.
+                    </p>
+                    <button onclick="transitionToDemo()" class="px-8 py-3.5 font-outfit tracking-[0.2em] uppercase text-[10px] text-white/70 hover:text-white glass-card rounded-md border border-white/5 hover:border-white/20 duration-300 cursor-pointer">
+                        Enter Calibration Space
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+
+        <!-- ================= SECTION 2: INTERACTIVE DEMO (SUBPAGE) ================= -->
+        <main id="demo-page" class="w-full min-h-screen flex flex-col justify-between px-6 py-8 hidden opacity-0 transition-opacity duration-1000">
+            
+            <!-- Dashboard Header -->
+            <header class="w-full max-w-7xl mx-auto flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+                <div class="flex flex-col">
+                    <span class="font-outfit text-sm tracking-[0.3em] uppercase text-white">Bio-Sense // Lab Sandbox</span>
+                    <span class="text-[9px] tracking-[0.2em] text-white/30 uppercase mt-1">Sticker Interface & Calibration Engine</span>
+                </div>
+                <button onclick="transitionToLanding()" class="group flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase text-white/40 hover:text-white font-outfit duration-300 cursor-pointer bg-white/5 px-4 py-2 rounded-md hover:bg-white/10">
+                    <svg class="w-3 h-3 transform group-hover:-translate-x-1 duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Story
+                </button>
+            </header>
+
+            <!-- Main Interactive Split Screen Dashboard -->
+            <div class="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 my-auto items-stretch">
+                
+                <!-- Left Column: Camera Feed Sandbox -->
+                <div class="lg:col-span-7 flex flex-col">
+                    <div class="glass-card rounded-2xl flex-grow overflow-hidden relative flex flex-col border-white/10 aspect-video lg:aspect-auto min-h-[350px] lg:min-h-[500px] shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]">
+                        
+                        <!-- Top status bar -->
+                        <div class="absolute top-0 left-0 right-0 z-20 px-6 py-4 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent border-b border-white/5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="camera-pulse"></span>
+                                <span class="font-outfit text-[10px] tracking-[0.2em] text-white/70 uppercase" id="camera-status-label">Active Calibration Feed</span>
+                            </div>
+                            <div class="font-outfit text-[9px] tracking-[0.2em] text-white/40 uppercase" id="fps-counter">
+                                Engine: 60 FPS
+                            </div>
+                        </div>
+
+                        <!-- Webcam element (hidden, processed via js) -->
+                        <video id="webcam-video" autoplay playsinline muted class="hidden"></video>
+
+                        <!-- Canvas overlay for webcam and interactive particles -->
+                        <canvas id="webcam-canvas" class="absolute inset-0 w-full h-full object-cover z-10"></canvas>
+
+                        <!-- Diagnostics overlay panels -->
+                        <div class="absolute bottom-4 left-4 z-20 pointer-events-none flex flex-col gap-1.5 max-w-[200px] font-mono text-[9px] text-white/40 uppercase bg-black/60 backdrop-blur-md p-3 rounded-lg border border-white/5">
+                            <div class="text-[10px] text-white/80 font-bold border-b border-white/10 pb-1 mb-1 font-outfit tracking-wider">Calibration Readouts</div>
+                            <div class="flex justify-between"><span>Core Temp:</span> <span class="text-white/80" id="diag-temp">36.5 °C</span></div>
+                            <div class="flex justify-between"><span>Conductivity:</span> <span class="text-white/80" id="diag-cond">4.2 uS</span></div>
+                            <div class="flex justify-between"><span>Heart Rhythm:</span> <span class="text-white/80" id="diag-hr">72 BPM</span></div>
+                            <div class="flex justify-between"><span>Active State:</span> <span class="text-white/90" id="diag-state">Normal</span></div>
+                        </div>
+
+                        <!-- Bottom feedback bar -->
+                        <div class="absolute bottom-4 right-4 z-20 pointer-events-none font-outfit text-[9px] tracking-[0.2em] text-white/40 uppercase bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                            AURA CALIBRATION MATRIX
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right Column: Minimalist Control Panel -->
+                <div class="lg:col-span-5 flex flex-col justify-between gap-6">
+                    
+                    <!-- Glassmorphic panel -->
+                    <div class="glass-card rounded-2xl p-8 flex flex-col justify-between flex-grow relative overflow-hidden">
+                        
+                        <!-- Normal Control Content -->
+                        <div id="panel-controls-normal" class="flex flex-col justify-between h-full flex-grow">
+                            <!-- Mode Selector Tabs -->
+                            <div>
+                                <div class="font-outfit text-[10px] tracking-[0.2em] text-white/30 uppercase mb-4">Sensing Protocol</div>
+                                <div class="grid grid-cols-2 gap-3 p-1 bg-white/5 rounded-lg border border-white/5 mb-8">
+                                    <button id="btn-mode-a" onclick="switchControlMode('manual')" class="py-2.5 rounded-md text-[10px] tracking-[0.2em] uppercase font-outfit duration-300 cursor-pointer bg-white/10 text-white border border-white/10 shadow-md">
+                                        Mode A: Manual
+                                    </button>
+                                    <button id="btn-mode-b" onclick="switchControlMode('ai')" class="py-2.5 rounded-md text-[10px] tracking-[0.2em] uppercase font-outfit duration-300 cursor-pointer text-white/40 hover:text-white hover:bg-white/5">
+                                        Mode B: AI Audio
+                                    </button>
+                                </div>
+ 
+                                <!-- MODE A PANEL (Manual Slider) -->
+                                <div id="panel-mode-a" class="block">
+                                    <h4 class="font-outfit text-xs text-white/70 tracking-[0.2em] uppercase mb-2">Aura Simulator Control</h4>
+                                    <p class="text-xs text-white/40 leading-relaxed font-light mb-8">
+                                        Manually sweep across the biometric spectrum to preview how the smart skin sticker dynamically adjusts the user's micro-atmosphere.
+                                    </p>
+ 
+                                    <div class="space-y-12">
+                                        <!-- Horizontal Slider Container -->
+                                        <div class="flex flex-col gap-4">
+                                            <div class="flex justify-between text-[10px] font-outfit tracking-wider text-white/50">
+                                                <span>DRAINED</span>
+                                                <span>BALANCED</span>
+                                                <span>ANXIOUS</span>
+                                                <span class="text-red-400/80 font-medium">POLICED</span>
+                                            </div>
+                                            <input id="mode-a-slider" type="range" min="0" max="3" step="1" value="1" oninput="handleSliderChange(this.value)" class="w-full">
+                                        </div>
+ 
+                                        <!-- Selected State Narrative Card -->
+                                        <div class="p-5 bg-white/[0.02] border border-white/5 rounded-xl flex flex-col gap-3">
+                                            <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                                                <span class="font-outfit text-[10px] tracking-[0.2em] uppercase text-white/50">Simulated Aura</span>
+                                                <span id="slider-glow-badge" class="px-2 py-0.5 rounded text-[8px] font-mono tracking-wider font-bold"></span>
+                                            </div>
+                                            <div>
+                                                <h5 id="slider-state-title" class="font-outfit text-sm tracking-[0.1em] text-white uppercase font-light"></h5>
+                                                <p id="slider-state-desc" class="text-xs text-white/50 leading-relaxed font-light mt-2 text-justify"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+ 
+                                <!-- MODE B PANEL (AI Sound/Audio Detection) -->
+                                <div id="panel-mode-b" class="hidden">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="font-outfit text-xs text-white/70 tracking-[0.2em] uppercase">AI Audio Sensing</h4>
+                                        <span class="inline-block px-2 py-0.5 rounded text-[8px] font-mono tracking-wider font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse uppercase">Neural Calibrator</span>
+                                    </div>
+                                    <p class="text-xs text-white/40 leading-relaxed font-light mb-8">
+                                        Utilizes the microphone feed to analyze ambient decibel levels. High decibel surges trigger flight-or-fight response cooling; silent environments ease into a comforting protective cocoon.
+                                    </p>
+ 
+                                    <div class="space-y-6">
+                                        <!-- Activity Level Bar Graph -->
+                                        <div class="p-5 bg-white/[0.02] border border-white/5 rounded-xl flex flex-col gap-4">
+                                            <div class="flex justify-between items-center text-[10px] font-outfit tracking-wider text-white/50">
+                                                <span>Sensed Sound Volume</span>
+                                                <span id="motion-readout" class="font-mono text-white">0%</span>
+                                            </div>
+                                            <div class="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                                <div id="motion-bar" class="h-full w-0 bg-gradient-to-r from-purple-500 via-orange-400 to-teal-400 duration-100 ease-out shadow-[0_0_10px_rgba(255,255,255,0.1)]"></div>
+                                            </div>
+                                        </div>iv>
+
+                                        <!-- Diagnostic Output logs -->
+                                        <div class="flex flex-col gap-2">
+                                            <div class="font-outfit text-[10px] tracking-[0.2em] text-white/30 uppercase">Neural Signal Log</div>
+                                            <div id="log-box" class="h-28 overflow-y-auto font-mono text-[9px] text-white/40 bg-black/50 p-4 rounded-xl border border-white/5 space-y-1.5 scrollbar-thin">
+                                                <div>[00:00:00] BIO-STICKER COGNITIVE LINK READY.</div>
+                                                <div>[00:00:01] INITIATING LIGHTWEIGHT OPTICAL FLOW ENGINE...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Panel Controls Policed -->
+                        <div id="panel-controls-policed" class="hidden flex-col justify-between h-full flex-grow">
+                            <div>
+                                <div class="flex justify-between items-center mb-6 border-b border-red-500/20 pb-4">
+                                    <h4 class="font-outfit text-xs text-red-500 tracking-[0.2em] uppercase font-bold animate-pulse">Forced Recovery Protocol</h4>
+                                    <span class="px-2 py-0.5 rounded text-[8px] font-mono tracking-wider font-bold bg-red-500/20 text-red-400 border border-red-500/30">PANOPTICON ACTIVE</span>
+                                </div>
+                                <p class="text-xs text-white/50 leading-relaxed font-light mb-6 text-justify">
+                                    Continuous biological stress signatures detected. Manual and automated sensing overrides have been suspended by the National Health Insurance API.
+                                </p>
+                                
+                                <div class="p-5 bg-red-950/10 border border-red-500/10 rounded-xl flex flex-col gap-3 mb-6">
+                                    <div class="flex justify-between items-center text-[10px] font-outfit tracking-wider text-red-400/80">
+                                        <span>WORKSPACE STATE</span>
+                                        <span class="font-mono font-bold animate-pulse">RESTRICTED</span>
+                                    </div>
+                                    <p class="text-[11px] text-white/60 leading-normal font-light">
+                                        All non-essential system utilities and developer tools are frozen. Daily health insurance premium: <span class="text-red-400 font-medium">+15% adjustment applied</span>.
+                                    </p>
+                                </div>
+
+                                <!-- Guided breathing container -->
+                                <div class="flex flex-col items-center justify-center py-6 border border-white/5 bg-white/[0.01] rounded-xl relative overflow-hidden">
+                                    <!-- Breathing Orb -->
+                                    <div id="breathing-orb" class="w-24 h-24 rounded-full bg-gradient-to-r from-red-500 to-rose-500 flex items-center justify-center text-[10px] font-outfit uppercase tracking-widest text-white shadow-[0_0_25px_rgba(239,68,68,0.3)] transition-all duration-1000 ease-in-out">
+                                        Calibrate
+                                    </div>
+                                    <div id="breathing-instruction" class="text-xs text-white/80 tracking-widest font-light uppercase mt-6 font-outfit h-4 text-center">
+                                        Awaiting User Signal...
+                                    </div>
+                                    <!-- Progress bar -->
+                                    <div class="w-full px-8 mt-6">
+                                        <div class="flex justify-between text-[8px] font-mono text-white/40 mb-1">
+                                            <span>BIOMETRIC RESET</span>
+                                            <span id="breathing-timer">0%</span>
+                                        </div>
+                                        <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                            <div id="breathing-progress-bar" class="h-full bg-gradient-to-r from-red-500 to-rose-400 w-0 duration-100 ease-out"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <button id="btn-start-breathing" onclick="startBreathingExercise()" class="w-full py-3.5 rounded-md text-[10px] tracking-[0.2em] uppercase font-outfit duration-300 cursor-pointer bg-red-950/20 hover:bg-red-900/40 text-red-400 border border-red-500/20 hover:border-red-500/40 shadow-md">
+                                    Initiate De-escalation Cycle
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Mini bio-sensor schematic overlay info -->
+                        <div class="border-t border-white/5 pt-6 mt-8 flex items-center gap-4 text-white/30">
+                            <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                                <div class="absolute inset-1 rounded-full border border-dashed border-white/20 animate-spin"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></div>
+                            </div>
+                            <div class="text-[9px] tracking-wider uppercase leading-relaxed font-light">
+                                <span class="text-white/60 font-semibold">Bio-Sense Skin Sticker Concept</span><br>
+                                Graphene Matrix // 0.02mm thickness // Polyimide substrate
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer: Critical Reflection -->
+            <footer class="w-full max-w-7xl mx-auto mt-12 border-t border-white/5 pt-6 text-center lg:text-left">
+                <div class="glass-card p-6 md:p-8 rounded-xl border border-red-500/10 shadow-[0_-10px_40px_rgba(239,68,68,0.02)]">
+                    <div class="flex flex-col lg:flex-row gap-6 lg:gap-12 items-start justify-between">
+                        <div class="flex items-center gap-3 font-outfit text-[10px] tracking-[0.2em] uppercase text-red-500/70 border border-red-500/20 px-3 py-1 rounded bg-red-950/20">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            CRITICAL SPECULATION
+                        </div>
+                        <p class="text-xs text-white/40 leading-relaxed font-light text-justify max-w-5xl flex-grow">
+                            This system showcases a near-future optimization of health. However, its inherent flaw lies in its perfection: when aesthetic remedies fail to restore our bio-state, the system shifts from gentle comfort to forced policing (locking tools, reporting stats, raising insurance premiums). Technology, in its quest for perfect health, inadvertently builds a data panopticon, leaving us anxious about our inability to recover.
+                        </p>
+                    </div>
+                </div>
+            </footer>
+
+        </main>
+
+    </div>
+
+    <!-- Core Interactive Engines Code -->
+    <script>
+        // Global Application State Manager
+        const STATE = {
+            currentView: 'landing', // 'landing' or 'demo'
+            controlMode: 'manual',  // 'manual' or 'ai'
+            bioState: 'balanced',   // 'drained' (Left), 'balanced' (Middle), 'anxious' (Right), 'policed' (Failsafe Lock)
+            colorTheme: {
+                drained: { r: 177, g: 159, b: 251, glow: 'rgba(177, 159, 251, 0.4)', hex: '#B19FFB' },
+                balanced: { r: 255, g: 158, b: 121, glow: 'rgba(255, 158, 121, 0.4)', hex: '#FF9E79' },
+                anxious: { r: 0, g: 255, b: 204, glow: 'rgba(0, 255, 204, 0.6)', hex: '#00FFCC' },
+                policed: { r: 255, g: 59, b: 48, glow: 'rgba(255, 59, 48, 0.6)', hex: '#FF3B30' }
+            },
+            motionLevel: 0,         // 0.0 to 1.0 representation
+            webcamActive: false,
+            logs: []
+        };
+
+        // UI references
+        const elLanding = document.getElementById('landing-page');
+        const elDemo = document.getElementById('demo-page');
+        const bgGlow1 = document.getElementById('ambient-glow-1');
+        const bgGlow2 = document.getElementById('ambient-glow-2');
+        const logBox = document.getElementById('log-box');
+        
+        // Setup State Descriptions
+        const STATE_INFOS = {
+            drained: {
+                title: "Social Battery Drained (Parasympathetic Response)",
+                desc: "Bio-sensors detect deep physiological exhaustion. The smart sticker transitions the user's localized aura into Dreamcore Smoked Purple, radiating slow-wave frequency cooling light. Particles drift sluggishly like a soothing thermal fog, dampening somatic alerts and creating a protective, low-stimulation cocoon.",
+                badgeClass: "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+            },
+            balanced: {
+                title: "Calm & Accompanied (Homeostasis Sustained)",
+                desc: "The organism functions in homeostatic balance. The smart sticker pulses gently in Warm Peach Orange, synchronized rhythmically with a steady 65 BPM heartbeat (WhisperLight architecture). Ambient particle vectors act as a companion layer, providing somatic assurance and anchoring the subconscious.",
+                badgeClass: "bg-orange-500/20 text-orange-400 border border-orange-500/30"
+            },
+            anxious: {
+                title: "High Anxiety/Adrenaline (Sympathetic Activation)",
+                desc: "Sudden spike in electrodermal activity and cardiac acceleration detected. The smart sticker flares into high-velocity Glow Neon Cyan/Green. Visual particles accelerate rapidly, experiencing high-frequency collisions and micro-swirls. The visual storm is designed to mirror and rapidly exhaust visual tracking, forcing the sympathetic nervous system to cycle down and release stress.",
+                badgeClass: "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+            },
+            policed: {
+                title: "System Lockdown / Biopolitical Policing (Sympathetic Overload)",
+                desc: "FAILSAFE OVERRIDE: Continuous elevated stress signatures detected. Aesthetic remedies have failed to restore homeostasis. Workspace tools are restricted, calendar events auto-postponed, and biological metrics have been logged to the National Health Insurer network. To unlock your interface, you are required to perform the Guided Breathing Calibration exercise.",
+                badgeClass: "bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse"
+            }
+        };
+
+        // System Log Handler
+        function addSystemLog(message) {
+            const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+            STATE.logs.push(`[${timestamp}] ${message.toUpperCase()}`);
+            if(STATE.logs.length > 30) STATE.logs.shift();
+            
+            if (logBox) {
+                logBox.innerHTML = STATE.logs.map(log => `<div>${log}</div>`).join('');
+                logBox.scrollTop = logBox.scrollHeight;
+            }
+        }
+
+        // Initialize Slider Information in UI
+        function updateSliderUI() {
+            const info = STATE_INFOS[STATE.bioState];
+            document.getElementById('slider-state-title').innerText = info.title;
+            document.getElementById('slider-state-desc').innerText = info.desc;
+            
+            const badge = document.getElementById('slider-glow-badge');
+            badge.className = `px-2 py-0.5 rounded text-[8px] font-mono tracking-wider font-bold ${info.badgeClass}`;
+            badge.innerText = STATE.bioState.toUpperCase();
+
+            // Update diagnostics
+            document.getElementById('diag-state').innerText = STATE.bioState;
+            
+            let temp = "36.5";
+            let cond = "4.2";
+            let hr = "72";
+            if (STATE.bioState === 'drained') {
+                temp = "35.8"; cond = "1.8"; hr = "54";
+            } else if (STATE.bioState === 'anxious') {
+                temp = "37.4"; cond = "14.6"; hr = "118";
+            } else if (STATE.bioState === 'policed') {
+                temp = "38.6"; cond = "32.4"; hr = "142";
+            }
+            document.getElementById('diag-temp').innerText = `${temp} °C`;
+            document.getElementById('diag-cond').innerText = `${cond} uS`;
+            document.getElementById('diag-hr').innerText = `${hr} BPM`;
+
+            // Adjust Ambient Orbs to reflect state colors
+            const targetColor = STATE.colorTheme[STATE.bioState].hex;
+            bgGlow1.style.backgroundColor = targetColor;
+            
+            if (STATE.bioState === 'policed') {
+                bgGlow2.style.backgroundColor = '#990000'; // Deep alarm red
+            } else {
+                bgGlow2.style.backgroundColor = (STATE.bioState === 'anxious') ? '#0077ff' : (STATE.bioState === 'drained' ? '#8a2be2' : '#ff7f50');
+            }
+
+            // Sync vignette overlay
+            const elVignette = document.getElementById('policed-vignette');
+            const statusLabel = document.getElementById('camera-status-label');
+            const pulse = document.getElementById('camera-pulse');
+            
+            if (STATE.bioState === 'policed') {
+                if (elVignette) {
+                    elVignette.classList.remove('hidden');
+                    elVignette.classList.add('policed-vignette-active');
+                }
+                
+                if (pulse) pulse.className = "w-2 h-2 rounded-full bg-red-500 animate-ping";
+                if (statusLabel) {
+                    statusLabel.innerText = "SYSTEM OVERRIDE // WORKSPACE LOCKED";
+                    statusLabel.classList.add("text-red-400");
+                }
+            } else {
+                if (elVignette) {
+                    elVignette.classList.add('hidden');
+                    elVignette.classList.remove('policed-vignette-active');
+                }
+                
+                if (pulse) pulse.className = STATE.webcamActive ? "w-2 h-2 rounded-full bg-emerald-500 animate-pulse" : "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+                if (statusLabel) {
+                    statusLabel.classList.remove("text-red-400");
+                    if (STATE.webcamActive) {
+                        statusLabel.innerText = "Webcam calibration active";
+                    } else {
+                        statusLabel.innerText = "Active Calibration Feed";
+                    }
+                }
+            }
+        }
+
+        // Handle Mode Switch
+        function switchControlMode(mode) {
+            if (STATE.bioState === 'policed') return;
+            STATE.controlMode = mode;
+            const btnA = document.getElementById('btn-mode-a');
+            const btnB = document.getElementById('btn-mode-b');
+            const panelA = document.getElementById('panel-mode-a');
+            const panelB = document.getElementById('panel-mode-b');
+
+            if (mode === 'manual') {
+                btnA.className = "py-2.5 rounded-md text-[10px] tracking-[0.2em] uppercase font-outfit duration-300 cursor-pointer bg-white/10 text-white border border-white/10 shadow-md";
+                btnB.className = "py-2.5 rounded-md text-[10px] tracking-[0.2em] uppercase font-outfit duration-300 cursor-pointer text-white/40 hover:text-white hover:bg-white/5";
+                panelA.style.display = "block";
+                panelB.style.display = "none";
+                addSystemLog("Switched to Manual Calibration Simulation");
+                
+                // Read value from slider and update
+                const val = document.getElementById('mode-a-slider').value;
+                handleSliderChange(val);
+            } else {
+                btnB.className = "py-2.5 rounded-md text-[10px] tracking-[0.2em] uppercase font-outfit duration-300 cursor-pointer bg-white/10 text-white border border-white/10 shadow-md";
+                btnA.className = "py-2.5 rounded-md text-[10px] tracking-[0.2em] uppercase font-outfit duration-300 cursor-pointer text-white/40 hover:text-white hover:bg-white/5";
+                panelA.style.display = "none";
+                panelB.style.display = "block";
+                addSystemLog("Switched to AI Real-Time Behavioral Sensing");
+                
+                if (!STATE.webcamActive) {
+                    initWebcam();
+                }
+            }
+        }
+
+        // Handle Slider Change
+        function handleSliderChange(val) {
+            const indexMap = ['drained', 'balanced', 'anxious', 'policed'];
+            STATE.bioState = indexMap[parseInt(val)];
+            updateSliderUI();
+            addSystemLog(`Bio-state overridden manually: ${STATE.bioState}`);
+            if (STATE.bioState === 'policed') {
+                triggerPolicedMode();
+            }
+        }
+
+        // SPECULATIVE DESIGN: Trigger Policed / Lock State
+        function triggerPolicedMode() {
+            STATE.bioState = 'policed';
+            
+            // Lock and sync slider
+            const slider = document.getElementById('mode-a-slider');
+            if (slider) {
+                slider.value = 3;
+                slider.disabled = true;
+            }
+
+            // Toggle panels
+            const panelNormal = document.getElementById('panel-controls-normal');
+            const panelPoliced = document.getElementById('panel-controls-policed');
+            if (panelNormal) panelNormal.className = 'hidden';
+            if (panelPoliced) panelPoliced.className = 'flex flex-col justify-between h-full flex-grow';
+
+            // Logs
+            addSystemLog("WARNING: SYMPATHETIC BURNOUT ADRENALINE LIMIT EXCEEDED.");
+            addSystemLog("INITIALIZING EMERGENCY BIOMETRIC LOCK PROTOCOL.");
+            addSystemLog("REPORT TRANSMITTED TO INSURANCE DATABASE. POLICY RISK LEVEL STAGE D.");
+            addSystemLog("TO UNLOCK: INITIALIZE GUIDED DE-ESCALATION BREATHING CYCLE.");
+
+            // Update UI elements
+            updateSliderUI();
+        }
+
+        // Interactive Guided Breathing recab protocol variables
+        let breathingInterval = null;
+        let breathingTimerId = null;
+
+        function startBreathingExercise() {
+            const btn = document.getElementById('btn-start-breathing');
+            const orb = document.getElementById('breathing-orb');
+            const instruction = document.getElementById('breathing-instruction');
+            const timerLabel = document.getElementById('breathing-timer');
+            const progressBar = document.getElementById('breathing-progress-bar');
+
+            if (btn) btn.style.display = 'none';
+            if (orb) {
+                orb.className = 'w-24 h-24 rounded-full flex items-center justify-center text-[10px] font-outfit uppercase tracking-widest text-white transition-all duration-1000 ease-in-out';
+                orb.style.backgroundColor = '';
+                orb.style.boxShadow = '';
+            }
+            
+            addSystemLog("Guided Breathing Recalibration initiated.");
+
+            let elapsed = 0;
+            const duration = 12; // 12 seconds total
+
+            if (progressBar) progressBar.style.width = '0%';
+            if (timerLabel) timerLabel.innerText = '0%';
+
+            // Progress bar ticking
+            if (breathingInterval) clearInterval(breathingInterval);
+            breathingInterval = setInterval(() => {
+                elapsed += 0.1;
+                const percent = Math.min((elapsed / duration) * 100, 100);
+                if (progressBar) progressBar.style.width = `${percent}%`;
+                if (timerLabel) timerLabel.innerText = `${Math.round(percent)}%`;
+
+                if (elapsed >= duration) {
+                    clearInterval(breathingInterval);
+                }
+            }, 100);
+
+            // Phase Changes
+            // 0s: Inhale (4s)
+            if (orb) orb.classList.add('orb-inhale');
+            if (instruction) instruction.innerText = "Breathe In...";
+            addSystemLog("Calibration phase 1: Inhale thermal stabilizer aura values.");
+
+            // 4s: Hold (2s)
+            if (breathingTimerId) clearTimeout(breathingTimerId);
+            breathingTimerId = setTimeout(() => {
+                if (orb) orb.className = 'w-24 h-24 rounded-full flex items-center justify-center text-[10px] font-outfit uppercase tracking-widest text-white transition-all duration-1000 ease-in-out orb-hold';
+                if (instruction) instruction.innerText = "Hold your breath...";
+                addSystemLog("Calibration phase 2: Holding for biopolitical network diagnostic check.");
+
+                // 6s: Exhale (4s)
+                breathingTimerId = setTimeout(() => {
+                    if (orb) orb.className = 'w-24 h-24 rounded-full flex items-center justify-center text-[10px] font-outfit uppercase tracking-widest text-white transition-all duration-1000 ease-in-out orb-exhale';
+                    if (instruction) instruction.innerText = "Breathe Out...";
+                    addSystemLog("Calibration phase 3: Exhaling stress variables to graphene matrix.");
+
+                    // 10s: Aligning (2s)
+                    breathingTimerId = setTimeout(() => {
+                        if (orb) {
+                            orb.className = 'w-24 h-24 rounded-full flex items-center justify-center text-[10px] font-outfit uppercase tracking-widest text-white transition-all duration-350 ease-in-out';
+                            orb.style.transform = 'scale(1.0)';
+                            orb.style.backgroundColor = 'rgba(16, 185, 129, 0.85)';
+                            orb.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.6)';
+                        }
+                        if (instruction) instruction.innerText = "Re-linking Graphene matrix...";
+                        addSystemLog("Calibration phase 4: Synchronizing local sensory interface...");
+
+                        // 12s: Unlock!
+                        breathingTimerId = setTimeout(() => {
+                            STATE.bioState = 'balanced';
+                            
+                            // Restore UI elements
+                            const slider = document.getElementById('mode-a-slider');
+                            if (slider) {
+                                slider.value = 1;
+                                slider.disabled = false;
+                            }
+                            
+                            const panelNormal = document.getElementById('panel-controls-normal');
+                            const panelPoliced = document.getElementById('panel-controls-policed');
+                            if (panelNormal) panelNormal.className = 'flex flex-col justify-between h-full flex-grow';
+                            if (panelPoliced) panelPoliced.className = 'hidden';
+
+                            if (btn) btn.style.display = 'block';
+                            if (orb) {
+                                orb.style.transform = '';
+                                orb.style.backgroundColor = '';
+                                orb.style.boxShadow = '';
+                            }
+                            
+                            updateSliderUI();
+                            
+                            // Reset AI tracking parameters
+                            anxiousFrameCount = 0;
+                            smoothedMotion = 0;
+
+                            addSystemLog("BIOMETRIC HOME-STABILITY CALIBRATED. ACCREDITED RESTORE STATUS COGNITIVE RETURN SUCCESSFUL.");
+                        }, 2000);
+
+                    }, 4000);
+
+                }, 2000);
+
+            }, 4000);
+        }
+
+        // ================= PAGE TRANSITIONS =================
+        function transitionToDemo() {
+            STATE.currentView = 'demo';
+            
+            // Fade out Landing, fade in Demo
+            elLanding.style.opacity = '0';
+            setTimeout(() => {
+                elLanding.style.display = 'none';
+                elDemo.style.display = 'flex';
+                // Trigger reflow
+                elDemo.offsetHeight;
+                elDemo.style.opacity = '1';
+                window.scrollTo(0, 0);
+                
+                // Initialize default slider state UI
+                updateSliderUI();
+                
+                // Pause background particle system ticks to optimize performance
+                bgEngine.pause();
+                
+                // Resize and prepare webcam engine canvas rendering
+                webcamEngine.resize();
+                webcamEngine.generateParticles();
+                webcamEngine.start();
+                
+                addSystemLog("Entered Calibration Space");
+                
+                // Initialize webcam stream if AI mode starts active
+                if (STATE.controlMode === 'ai' && !STATE.webcamActive) {
+                    initWebcam();
+                }
+            }, 600);
+        }
+
+        function transitionToLanding() {
+            if (STATE.bioState === 'policed') {
+                addSystemLog("ACTION BLOCKED: USER MUST COMPLETE CALIBRATION PROTOCOL");
+                const panel = document.getElementById('panel-controls-policed');
+                if (panel) {
+                    panel.style.transform = 'translateX(10px)';
+                    setTimeout(() => panel.style.transform = 'translateX(-10px)', 80);
+                    setTimeout(() => panel.style.transform = 'translateX(5px)', 160);
+                    setTimeout(() => panel.style.transform = 'translateX(-5px)', 240);
+                    setTimeout(() => panel.style.transform = '', 320);
+                }
+                return;
+            }
+            STATE.currentView = 'landing';
+            
+            // Fade out Demo, fade in Landing
+            elDemo.style.opacity = '0';
+            setTimeout(() => {
+                elDemo.style.display = 'none';
+                elLanding.style.display = 'flex';
+                // Trigger reflow
+                elLanding.offsetHeight;
+                elLanding.style.opacity = '1';
+                window.scrollTo(0, 0);
+                
+                // Pause webcam rendering to optimize CPU usage
+                webcamEngine.pause();
+                
+                // Resume background simulation ticks
+                bgEngine.start();
+                
+                addSystemLog("Returned to context storytelling view");
+            }, 600);
+        }
+
+        document.getElementById('btn-explore').addEventListener('click', transitionToDemo);
+
+
+        // ================= CANVAS PHYSICS ENGINE =================
+        class ParticleEngine {
+            constructor(canvasId, particleCount, isWebcamLayer = false) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.particleCount = particleCount;
+                this.isWebcamLayer = isWebcamLayer;
+                this.particles = [];
+                this.running = false;
+                this.mouse = { x: null, y: null, active: false, radius: 250 };
+                this.animationFrameId = null;
+
+                // Color interpolation buffers
+                this.currentColor = { r: 255, g: 158, b: 121 }; // Start homeostatic peach
+
+                this.initResize();
+                this.initMouseEvents();
+                this.generateParticles();
+            }
+
+            initResize() {
+                this.resize = () => {
+                    let w, h;
+                    if (!this.isWebcamLayer) {
+                        w = window.innerWidth;
+                        h = window.innerHeight;
+                    } else {
+                        const parent = this.canvas.parentElement;
+                        w = parent.clientWidth || 300;
+                        h = parent.clientHeight || 150;
+                    }
+                    
+                    const dpr = window.devicePixelRatio || 1;
+                    this.canvas.width = w * dpr;
+                    this.canvas.height = h * dpr;
+                    
+                    this.ctx.scale(dpr, dpr);
+                    this.width = w;
+                    this.height = h;
+                };
+                this.resize();
+                window.addEventListener('resize', this.resize);
+            }
+
+            initMouseEvents() {
+                const getCoords = (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    return {
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top
+                    };
+                };
+
+                // Attaching to window ensures continuous tracking even outside the canvas boundaries
+                window.addEventListener('mousemove', (e) => {
+                    const coords = getCoords(e);
+                    this.mouse.x = coords.x;
+                    this.mouse.y = coords.y;
+                    this.mouse.active = true;
+                });
+
+                window.addEventListener('mouseleave', () => {
+                    this.mouse.active = false;
+                });
+                
+                // Support touches
+                window.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) {
+                        const coords = getCoords(e.touches[0]);
+                        this.mouse.x = coords.x;
+                        this.mouse.y = coords.y;
+                        this.mouse.active = true;
+                    }
+                });
+                window.addEventListener('touchend', () => {
+                    this.mouse.active = false;
+                });
+            }
+
+            generateParticles() {
+                this.particles = [];
+                for (let i = 0; i < this.particleCount; i++) {
+                    const x = Math.random() * (this.width || window.innerWidth);
+                    const y = Math.random() * (this.height || window.innerHeight);
+                    this.particles.push({
+                        x: x,
+                        y: y,
+                        ox: x,
+                        oy: y,
+                        vx: (Math.random() - 0.5) * 0.7,
+                        vy: (Math.random() - 0.5) * 0.7,
+                        baseSize: Math.random() * 2.5 + 1.2,
+                        size: 2,
+                        alpha: Math.random() * 0.4 + 0.3,
+                        angle: Math.random() * Math.PI * 2,
+                        angularSpeed: (Math.random() - 0.5) * 0.05,
+                        pulsePhase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            start() {
+                if (!this.running) {
+                    this.running = true;
+                    this.tick();
+                }
+            }
+
+            pause() {
+                this.running = false;
+                if (this.animationFrameId) {
+                    cancelAnimationFrame(this.animationFrameId);
+                }
+            }
+
+            tick() {
+                if (!this.running) return;
+                this.update();
+                this.render();
+                this.animationFrameId = requestAnimationFrame(() => this.tick());
+            }
+
+            update() {
+                const targetColor = STATE.colorTheme[STATE.bioState];
+                
+                // Smooth color transition interpolation
+                this.currentColor.r += (targetColor.r - this.currentColor.r) * 0.05;
+                this.currentColor.g += (targetColor.g - this.currentColor.g) * 0.05;
+                this.currentColor.b += (targetColor.b - this.currentColor.b) * 0.05;
+
+                if (STATE.bioState === 'policed') {
+                    const cols = Math.floor(Math.sqrt(this.particleCount * (this.width / this.height)));
+                    const rows = Math.ceil(this.particleCount / cols);
+                    
+                    const cellW = this.width / cols;
+                    const cellH = this.height / rows;
+
+                    this.particles.forEach((p, idx) => {
+                        const col = idx % cols;
+                        const row = Math.floor(idx / cols);
+
+                        const targetX = col * cellW + cellW / 2;
+                        const targetY = row * cellH + cellH / 2;
+
+                        p.x += (targetX - p.x) * 0.08;
+                        p.y += (targetY - p.y) * 0.08;
+                        p.vx = 0;
+                        p.vy = 0;
+                        p.size = 1.0;
+                    });
+                    return; // Bypass normal force integration!
+                }
+
+                // Adjust dynamics parameters based on biosensor state
+                let friction = 0.98;
+                let speedScale = 1.0;
+                let driftUp = 0;
+                let pulseFreq = 0.03;
+                let particleMultiplier = 1;
+                let chaoticForce = 0;
+                
+                if (STATE.bioState === 'drained') {
+                    friction = 0.94; // Higher viscosity
+                    speedScale = 0.12; // Floating slow-motion
+                    driftUp = -0.04;  // Gravity offset
+                    pulseFreq = 0.005;
+                } else if (STATE.bioState === 'balanced') {
+                    friction = 0.97;
+                    speedScale = 0.45; // Homeostatic pacing
+                    pulseFreq = 0.02; // heartbeat sync
+                } else if (STATE.bioState === 'anxious') {
+                    friction = 0.99;  // low drag, high bounce
+                    speedScale = 1.6;  // high velocity storm
+                    chaoticForce = 0.25; // noisy collision
+                }
+
+                // Silhouette outline gravity anchors (for webcam fallback)
+                const silhouettePulse = 1 + 0.02 * Math.sin(Date.now() / 400);
+
+                this.particles.forEach(p => {
+                    // 1. Base ambient drift
+                    p.angle += p.angularSpeed;
+                    
+                    if (STATE.bioState === 'anxious') {
+                        // High anxiety chaotic collisions
+                        p.vx += (Math.random() - 0.5) * chaoticForce;
+                        p.vy += (Math.random() - 0.5) * chaoticForce;
+                    } else if (STATE.bioState === 'drained') {
+                        // Gentle thermal upwards drift
+                        p.vy += driftUp;
+                        p.vx += (Math.random() - 0.5) * 0.04;
+                    } else {
+                        // Normal gentle Brownian weave
+                        p.vx += Math.cos(p.angle) * 0.02 * speedScale;
+                        p.vy += Math.sin(p.angle) * 0.02 * speedScale;
+                    }
+
+                    // 2. Mouse Antigravity & Swirl Physics
+                    if (this.mouse.active && this.mouse.x !== null) {
+                        const dx = this.mouse.x - p.x;
+                        const dy = this.mouse.y - p.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < this.mouse.radius) {
+                            const strength = (1 - dist / this.mouse.radius);
+                            
+                            // Antigravity swirl vector: perpendicular to direction
+                            const swirlX = -dy / (dist || 1);
+                            const swirlY = dx / (dist || 1);
+                            
+                            // Combine attraction, swirl and inertial damping
+                            if (STATE.bioState === 'anxious') {
+                                // Violent scattering / chaotic repel
+                                p.vx -= (dx / dist) * strength * 1.5;
+                                p.vy -= (dy / dist) * strength * 1.5;
+                                // Rapid swirl
+                                p.vx += swirlX * strength * 2.5;
+                                p.vy += swirlY * strength * 2.5;
+                            } else if (STATE.bioState === 'drained') {
+                                // Gentle pulling inward
+                                p.vx += (dx / dist) * strength * 0.2;
+                                p.vy += (dy / dist) * strength * 0.2;
+                                // Sluggish swirl
+                                p.vx += swirlX * strength * 0.15;
+                                p.vy += swirlY * strength * 0.15;
+                            } else {
+                                // Balanced orbit swirl
+                                p.vx += (dx / dist) * strength * 0.4;
+                                p.vy += (dy / dist) * strength * 0.4;
+                                p.vx += swirlX * strength * 0.8;
+                                p.vy += swirlY * strength * 0.8;
+                            }
+                        }
+                    }
+
+                    // 3. Update Velocities with limits
+                    p.vx *= friction;
+                    p.vy *= friction;
+                    
+                    p.x += p.vx * speedScale;
+                    p.y += p.vy * speedScale;
+
+                    // 4. Border wrapping or bouncing
+                    if (STATE.bioState === 'anxious') {
+                        // Bouncing off dashboard boundaries
+                        if (p.x < 0) { p.x = 0; p.vx *= -1; }
+                        if (p.x > this.width) { p.x = this.width; p.vx *= -1; }
+                        if (p.y < 0) { p.y = 0; p.vy *= -1; }
+                        if (p.y > this.height) { p.y = this.height; p.vy *= -1; }
+                    } else {
+                        // Infinite boundary wrapping
+                        if (p.x < -10) p.x = this.width + 10;
+                        if (p.x > this.width + 10) p.x = -10;
+                        if (p.y < -10) p.y = this.height + 10;
+                        if (p.y > this.height + 10) p.y = -10;
+                    }
+
+                    // 5. Size heartbeat pulsing
+                    p.pulsePhase += pulseFreq;
+                    if (STATE.bioState === 'balanced') {
+                        // Heartbeat rhythmic sync pulse
+                        const pulse = Math.sin(p.pulsePhase) * 0.45;
+                        p.size = p.baseSize * (1 + pulse);
+                    } else if (STATE.bioState === 'drained') {
+                        // Cloud-like large soft mist particles
+                        p.size = p.baseSize * 1.5;
+                    } else {
+                        // Rapid tiny sparks
+                        p.size = p.baseSize * 0.8;
+                    }
+                });
+            }
+
+            render() {
+                // Determine clearing alpha for trails effect
+                let clearAlpha = 0.12; // Moderate trail
+                if (STATE.bioState === 'anxious') {
+                    clearAlpha = 0.22; // Shorter sparks
+                } else if (STATE.bioState === 'drained') {
+                    clearAlpha = 0.08; // Long misty lingering trails
+                }
+                
+                // Clear Canvas
+                this.ctx.fillStyle = `rgba(0, 0, 0, ${clearAlpha})`;
+                this.ctx.fillRect(0, 0, this.width, this.height);
+
+                // Draw silhouette on dashboard canvas if camera blocked
+                if (this.isWebcamLayer) {
+                    if (!STATE.webcamActive) {
+                        this.drawSilhouette();
+                    } else {
+                        // Draw styled camera frame underneath particles
+                        this.drawWebcamFrame();
+                    }
+                    
+                    // Render lock crosshair overlays on the canvas
+                    if (STATE.bioState === 'policed') {
+                        this.drawLockOverlays();
+                    }
+                }
+
+                // Render glowing particles
+                const r = Math.round(this.currentColor.r);
+                const g = Math.round(this.currentColor.g);
+                const b = Math.round(this.currentColor.b);
+
+                this.ctx.shadowBlur = STATE.bioState === 'drained' ? 12 : 8;
+                this.ctx.shadowColor = `rgb(${r}, ${g}, ${b})`;
+
+                this.particles.forEach(p => {
+                    this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+
+                this.ctx.shadowBlur = 0; // Reset shadow blur
+            }
+
+            drawSilhouette() {
+                // Programmatic human silhouette drawing with ambient pulse
+                const pulse = 1 + 0.015 * Math.sin(Date.now() / 450);
+                
+                const cX = this.width / 2;
+                const cY = this.height / 2 + 30;
+                
+                const r = Math.round(this.currentColor.r);
+                const g = Math.round(this.currentColor.g);
+                const b = Math.round(this.currentColor.b);
+
+                // Silhouette outline style
+                this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.18)`;
+                this.ctx.lineWidth = 1.5;
+                this.ctx.shadowBlur = 10;
+                this.ctx.shadowColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
+
+                // Draw head
+                this.ctx.beginPath();
+                this.ctx.arc(cX, cY - 70 * pulse, 35 * pulse, 0, Math.PI * 2);
+                this.ctx.stroke();
+
+                // Draw shoulders & chest
+                this.ctx.beginPath();
+                this.ctx.moveTo(cX - 120 * pulse, this.height);
+                this.ctx.bezierCurveTo(
+                    cX - 100 * pulse, cY + 30 * pulse, 
+                    cX - 40 * pulse, cY - 10 * pulse, 
+                    cX - 30 * pulse, cY - 25 * pulse
+                );
+                this.ctx.lineTo(cX - 25 * pulse, cY - 35 * pulse); // neck left
+                this.ctx.lineTo(cX + 25 * pulse, cY - 35 * pulse); // neck right
+                this.ctx.lineTo(cX + 30 * pulse, cY - 25 * pulse);
+                this.ctx.bezierCurveTo(
+                    cX + 40 * pulse, cY - 10 * pulse, 
+                    cX + 100 * pulse, cY + 30 * pulse, 
+                    cX + 120 * pulse, this.height
+                );
+                this.ctx.stroke();
+
+                // Reset canvas shadow states
+                this.ctx.shadowBlur = 0;
+
+                // Subtle inner grid overlay specifically inside silhouette boundaries (aesthetic masking effect)
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.01)';
+                this.ctx.font = 'Outfit 9px tracking-widest';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText("BIOMETRIC SANDBOX // STATIC MODE", cX, cY + 90);
+            }
+
+            drawWebcamFrame() {
+                const video = document.getElementById('webcam-video');
+                // Calculate dimensions for cover crop
+                const vW = video.videoWidth;
+                const vH = video.videoHeight;
+                if (!vW || !vH) return;
+
+                const scale = Math.max(this.width / vW, this.height / vH);
+                const drawW = vW * scale;
+                const drawH = vH * scale;
+                const drawX = (this.width - drawW) / 2;
+                const drawY = (this.height - drawH) / 2;
+
+                // Render styled camera frame with scanlines / monochrome mix
+                this.ctx.save();
+                this.ctx.globalAlpha = 0.8; // High opacity so the person is clearly visible
+                
+                // Flip camera horizontally for mirror effect
+                this.ctx.translate(this.width, 0);
+                this.ctx.scale(-1, 1);
+                this.ctx.drawImage(video, drawX, drawY, drawW, drawH);
+                this.ctx.restore();
+
+                // Faint horizontal scanlines overlay to enforce lab aesthetic
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                for (let i = 0; i < this.height; i += 4) {
+                    this.ctx.fillRect(0, i, this.width, 1);
+                }
+            }
+
+            drawLockOverlays() {
+                const r = Math.round(this.currentColor.r);
+                const g = Math.round(this.currentColor.g);
+                const b = Math.round(this.currentColor.b);
+
+                this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.35)`;
+                this.ctx.lineWidth = 1.2;
+
+                const cX = this.width / 2;
+                const cY = this.height / 2;
+                
+                // Draw circular scanning ring
+                this.ctx.beginPath();
+                this.ctx.arc(cX, cY, 75 + 12 * Math.sin(Date.now() / 200), 0, Math.PI * 2);
+                this.ctx.stroke();
+
+                // Draw target brackets
+                const size = 110;
+                this.ctx.beginPath();
+                // Top-Left
+                this.ctx.moveTo(cX - size, cY - size + 15);
+                this.ctx.lineTo(cX - size, cY - size);
+                this.ctx.lineTo(cX - size + 15, cY - size);
+                // Top-Right
+                this.ctx.moveTo(cX + size, cY - size + 15);
+                this.ctx.lineTo(cX + size, cY - size);
+                this.ctx.lineTo(cX + size - 15, cY - size);
+                // Bottom-Left
+                this.ctx.moveTo(cX - size, cY + size - 15);
+                this.ctx.lineTo(cX - size, cY + size);
+                this.ctx.lineTo(cX - size + 15, cY + size);
+                // Bottom-Right
+                this.ctx.moveTo(cX + size, cY + size - 15);
+                this.ctx.lineTo(cX + size, cY + size);
+                this.ctx.lineTo(cX + size - 15, cY + size);
+                this.ctx.stroke();
+
+                // Biometrical warning overlays
+                this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.85)`;
+                this.ctx.font = 'Outfit 10px tracking-[0.2em]';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText("BIOPOLITICAL LOCKDOWN ACTIVE", cX, cY - 140);
+                
+                this.ctx.font = 'monospace 8px';
+                this.ctx.fillText("FAILSAFE SYSTEM SHUTDOWN // STRESS OVERLOAD", cX, cY + 140);
+            }
+        }
+
+
+        // ================= WEBCAM & AI SOUND SENSING ENGINE =================
+        let audioContext = null;
+        let analyser = null;
+        let microphone = null;
+        let audioSource = null;
+        let smoothedVolume = 0;
+        let anxiousFrameCount = 0;
+
+        function initWebcam() {
+            const video = document.getElementById('webcam-video');
+            const statusLabel = document.getElementById('camera-status-label');
+            const pulse = document.getElementById('camera-pulse');
+
+            addSystemLog("Requesting camera and microphone permissions...");
+            
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 640 }, 
+                    height: { ideal: 480 },
+                    facingMode: "user" 
+                }, 
+                audio: true 
+            })
+            .then(stream => {
+                video.srcObject = stream;
+                video.play();
+                STATE.webcamActive = true;
+                
+                // Initialize audio sensing analyser
+                initAudioAnalyzer(stream);
+                
+                if (pulse) pulse.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+                if (statusLabel) statusLabel.innerText = "Webcam and Audio sensing active";
+                addSystemLog("Camera and Microphone feeds connected.");
+            })
+            .catch(err => {
+                console.warn("Camera/Mic access denied/failed:", err);
+                STATE.webcamActive = false;
+                if (pulse) pulse.className = "w-2 h-2 rounded-full bg-red-500";
+                if (statusLabel) statusLabel.innerText = "Sensing locked / Silhouette mode active";
+                addSystemLog("Access denied. Initializing silhouette fallback matrix.");
+            });
+        }
+
+        function initAudioAnalyzer(stream) {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                audioSource = audioContext.createMediaStreamSource(stream);
+                audioSource.connect(analyser);
+                addSystemLog("Audio frequency sensing online.");
+            } catch(e) {
+                console.error("Audio analyzer failed to load:", e);
+                addSystemLog("Failed to link microphone processor.");
+            }
+        }
+
+        function processAudioVolume() {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            if (!analyser) return;
+
+            const array = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(array);
+
+            let sum = 0;
+            for (let i = 0; i < array.length; i++) {
+                sum += array[i];
+            }
+            const average = sum / array.length; // Range: 0 - 255
+
+            // Sensitivity scaling: normal speaking/ambient is ~10-40, shouting >70
+            const rawScore = Math.min(average / 90, 1.0);
+
+            // Smooth using rolling low-pass filter
+            smoothedVolume = smoothedVolume * 0.85 + rawScore * 0.15;
+            STATE.motionLevel = Math.round(smoothedVolume * 100);
+
+            updateAudioUI();
+        }
+
+        function updateAudioUI() {
+            if (STATE.controlMode !== 'ai') return;
+
+            const bar = document.getElementById('motion-bar');
+            const label = document.getElementById('motion-readout');
+
+            if (label) label.innerText = `${STATE.motionLevel}%`;
+            if (bar) bar.style.width = `${STATE.motionLevel}%`;
+
+            if (STATE.bioState === 'policed') return;
+
+            // State classification boundaries based on Sound Level
+            let computedState = 'balanced';
+            if (STATE.motionLevel < 8) {
+                computedState = 'drained'; // Quiet / Drained
+                anxiousFrameCount = 0;
+            } else if (STATE.motionLevel >= 8 && STATE.motionLevel < 30) {
+                computedState = 'balanced'; // Normal sound
+                anxiousFrameCount = 0;
+            } else {
+                computedState = 'anxious'; // Loud voice / noise
+                anxiousFrameCount++;
+            }
+
+            // Trigger policed state if loud sound for ~4 seconds (60 ticks @ 15fps/66ms) or extreme sound > 65%
+            if (anxiousFrameCount > 60 || STATE.motionLevel > 65) {
+                triggerPolicedMode();
+                return;
+            }
+
+            // Only update and trigger transition log upon state changes to prevent performance stutter
+            if (STATE.bioState !== computedState) {
+                STATE.bioState = computedState;
+                updateSliderUI();
+                addSystemLog(`AI classified state shift: ${computedState.toUpperCase()} (Volume: ${STATE.motionLevel}%)`);
+            }
+        }
+
+        // Loop audio volume processor
+        setInterval(() => {
+            if (STATE.currentView === 'demo' && STATE.controlMode === 'ai') {
+                processAudioVolume();
+            }
+        }, 66);
+
+
+        // ================= FPS CONTROLLER & ENGINE ENGINE =================
+        let lastTime = performance.now();
+        let frameCount = 0;
+        let fps = 60;
+        const fpsCounter = document.getElementById('fps-counter');
+
+        function measureFPS() {
+            const now = performance.now();
+            frameCount++;
+            if (now >= lastTime + 1000) {
+                fps = Math.round((frameCount * 1000) / (now - lastTime));
+                if (fpsCounter && STATE.currentView === 'demo') {
+                    fpsCounter.innerText = `Engine: ${fps} FPS`;
+                }
+                frameCount = 0;
+                lastTime = now;
+            }
+            requestAnimationFrame(measureFPS);
+        }
+        requestAnimationFrame(measureFPS);
+
+
+        // ================= CONTEXT ANIMATIONS & STARTUP =================
+        // Initialize background canvas simulation immediately on load
+        const bgEngine = new ParticleEngine('bg-canvas', 180, false);
+        const webcamEngine = new ParticleEngine('webcam-canvas', 250, true);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            bgEngine.start();
+            addSystemLog("Bio-sense installation successfully compiled.");
+            addSystemLog("Standing by. Launch exploration calibration when ready.");
+        });
+    </script>
+</body>
+</html>
